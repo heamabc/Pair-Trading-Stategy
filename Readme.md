@@ -12,7 +12,7 @@ Pair trading a pair of highly correlated/cointegrated stocks. If the price of th
 
 The focus on this strategy is to ensure the risk is minimal, and we take profit while we can. So the expected return is not high, and the expected volatility is low.
 
-## Work Flow
+## Workflow
 First use OLS regression to calculate the beta(hedge ratio) of the pair.
 
 Using the hedge ratio, we can calculate the spread everyday and create a series of spread using previous spread calulcated. 
