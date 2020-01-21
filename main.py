@@ -242,16 +242,16 @@ def process_pair(pair, context, data):
             s2_pos = -hedge
             in_long = True
             in_short = False
-            order_target_value(s1, value * s1_perc)
-            order_target_value(s2, value * s2_perc)
+            order_target_value(s1, value * s1_pos)
+            order_target_value(s2, value * s2_pos)
             return [s1, s2, {'in_short': in_short, 'in_long': in_long, 'spread': spread, 'hedge_history': hedge_history, 'residual': residual, 'z_scores': z_scores}]
         elif z_scores[-1] > context.z_entry and z_scores[-2] > context.z_entry and not in_short:
             s1_pos = -1
             s2_pos = hedge
             in_long = False
             in_short = True
-            order_target_value(s1, value * s1_perc)
-            order_target_value(s2, value * s2_perc)
+            order_target_value(s1, value * s1_pos)
+            order_target_value(s2, value * s2_pos)
             return [s1, s2, {'in_short': in_short, 'in_long': in_long, 'spread': spread, 'hedge_history': hedge_history, 'residual': residual, 'z_scores': z_scores}]
     
     return [s1, s2, {'in_short': in_short, 'in_long': in_long, 'spread': spread, 'hedge_history': hedge_history, 'residual': residual, 'z_scores': z_scores}]
