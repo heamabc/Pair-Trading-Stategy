@@ -70,11 +70,7 @@ def hedge_ratio(Y, X):
     result = sm.OLS(Y, X).fit()
     return result.params[0], result.params[1]
 
-def softmax_order(stock1, stock2, price1, price2):
-    stock1_cost = stock1 * price1
-    stock2_cost = stock2 * price2
-    costs = abs(stock1_cost) + abs(stock2_cost)
-    return stock1_cost/costs, stock2_cost/costs
+
     
 def initialize(context):
     
@@ -246,7 +242,6 @@ def process_pair(pair, context, data):
             s2_pos = -hedge
             in_long = True
             in_short = False
-            (s1_perc, s2_perc) = softmax_order(s1_pos, s2_pos, s1_p[-1], s2_p[-1])
             order_target_value(s1, value * s1_perc)
             order_target_value(s2, value * s2_perc)
             return [s1, s2, {'in_short': in_short, 'in_long': in_long, 'spread': spread, 'hedge_history': hedge_history, 'residual': residual, 'z_scores': z_scores}]
@@ -255,71 +250,8 @@ def process_pair(pair, context, data):
             s2_pos = hedge
             in_long = False
             in_short = True
-            (s1_perc, s2_perc) = softmax_order(s1_pos, s2_pos, s1_p[-1], s2_p[-1])
             order_target_value(s1, value * s1_perc)
             order_target_value(s2, value * s2_perc)
             return [s1, s2, {'in_short': in_short, 'in_long': in_long, 'spread': spread, 'hedge_history': hedge_history, 'residual': residual, 'z_scores': z_scores}]
     
     return [s1, s2, {'in_short': in_short, 'in_long': in_long, 'spread': spread, 'hedge_history': hedge_history, 'residual': residual, 'z_scores': z_scores}]
-
-'''
-def get_weight(context,data,pair,dev_cutoff,dev_ceil=3):
-    price_diff=context.price_hist[pair[0]].sub(context.price_hist[pair[1]])
-    mean_diff=price_diff.mean()
-    sd_diff=price_diff.std()
-    price1 = data.current(pair[0],"price")
-    price2 = data.current(pair[1],"price")
-    cur_diff = price1 - price2
-    cur_deviation = abs(cur_diff - mean_diff)/sd_diff
-    mprice=max(price1,price2)
-    weight=0
-    if (dev_ceil !=3):
-        print "Hm %s,Cm %s, sd %s,cd %s,mp %s" % (mean_diff,cur_diff,sd_diff,cur_deviation,mprice)
-    #Discard high volatile stock
-    if (sd_diff/mprice > .1):
-        return 0
-    if (cur_deviation > dev_cutoff and cur_deviation < dev_ceil):
-        if (cur_diff > mean_diff):
-            weight=(-1.0*cur_deviation)
-        else:
-            weight=(1.0*cur_deviation)
-    return weight  
-
-def get_pairs(context,data):
-    #print "Get Pair"
-    context.stock_list.loc[:,"isInt1"]= context.stock_list["sid"].                                  map(lambda sec:check_Int1(context,sec)) 
-    context.stock_group=context.stock_list[ context.stock_list["isInt1"].values].\
-                        groupby("industry")
-    context.paircount=0
-    for key, group in context.stock_group:
-        group_sids = group["sid"].tolist()
-        group_sids.sort(key=lambda x:x.sid)
-        if len(group_sids) > 1:
-            for pair in combinations(group_sids,2):
-                context.paircount+=1
-                if check_coint(context,pair):
-                    context.today_pairs.append(pair)
-                    if pair in context.pair_hist:
-                        None
-                    else:
-                        context.pair_hist[pair]={}
-                        context.pair_hist[pair]["stock1"]=pair[0].asset_name
-                        context.pair_hist[pair]["stock2"]=pair[1].asset_name
-                        context.pair_hist[pair]["profit"]=0
-                        context.pair_hist[pair]["nTrades"]=0
-                        context.pair_hist[pair]["weight"]=0
-                        context.pair_hist[pair]["cur_weight"]=0
-
-def pipeline_data(context):
-    context.selection = make_us_equity_universe(context.population_size, rankby=valuation.market_cap.latest, mask=context.universe,max_group_weight=0.1, groupby=asset_classification.morningstar_industry_code.latest)
-    industry = asset_classification.morningstar_industry_code.latest
-    
-    # Define a column dictionary that holds all the Factors
-    pipe_columns = {
-            'industry':industry
-            }
-
-    # Create a pipeline object with the defined columns and screen.
-    pipe = Pipeline(columns=pipe_columns,screen=context.selection)
-    return pipe
-'''
