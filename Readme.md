@@ -5,7 +5,7 @@ It is a pair trading strategy on a bucket of US stocks.
 It is written in the [Quantopian](https://www.quantopian.com/home) platform. It is written in python and if you want to run it without using Quantopian, you can install zipline package and the program will work fine. (Although few more actions need to be made for downloading the stocks data).
 
 ## Stock selection
-Create a bucket of stocks that are fundamentally correlated to each other (eg GOOG and GOOGL, V and MA). Also add stocks where their prices are statistically correlated. 
+Create a bucket of stocks that are fundamentally correlated to each other (eg GOOG and GOOGL, V and MA). Also add stocks where their prices are statistically correlated. I plotted the residuals of the time series regression between the two stocks, and see if the residuals is stationary.
 
 ## Strategy
 Pair trading a pair of highly correlated/cointegrated stocks. If the price of the two stocks abnormally deviate from each other, we  believe the pair would convert to each others in terms of price in the near future. (It is called mean-reversion process). We short sell the increasing one and long the decreasing one when they deviate from each other. If we enter position of the pair, we use market neutral approach instead of money neutral to avoid any extra exposure of the position.
